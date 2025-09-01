@@ -1,0 +1,278 @@
+.dropzone{
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+  border: 1px dashed;
+  border-radius: 10px;
+}
+
+.toast{
+  position:absolute;
+  z-index: 10;
+  right: 0%
+}
+
+.formLabel{
+  margin-left: 3%;
+  font-weight: 600;
+  font-size: larger;
+}
+ 
+.formfield_select{
+  margin-left: 3%;
+    width: 94%;
+    padding: 10px;
+}
+.formbody{
+  display: flex;
+  flex-direction: column;
+  border: solid 1px;
+    border-radius: 2rem;
+    margin: 4rem;
+    padding: 2rem;
+    gap: 2rem;
+    position: relative;
+}
+
+.formRow{
+  display: flex;
+  div{
+    flex: 1 1;
+  }
+}
+/* .formRowCol3{
+  display: flex;
+  div{
+    flex: 1 1 33%;
+  }  
+} */
+.formfield_ta {
+  margin-left: 2%;
+  width: 96%;
+  padding: 10px;
+  height: 50vh;
+}
+
+.formButton{
+  width: 10%;
+    position: relative;
+    margin-left: 3%;
+    border-radius: 4px;
+    background: #005D8F;
+    color: #ffffff;
+}
+.tab{
+  position: absolute;
+  bottom: 100%;
+  border-bottom: none;
+}
+.Restab{    
+  position: relative;
+  border-bottom: none;
+  margin-bottom: -16px;
+}
+
+.tab label{
+  cursor: pointer;
+}
+
+.btnAdd{
+  float: right;
+    margin-right: 5%;
+}
+
+/* Main Tab Navigation Styles */
+.main-tabs {
+  margin: 2rem 4rem 0rem 4rem;
+  /* Removed: border-bottom: 2px solid #005D8F; */
+}
+
+.main-tabs .nav-tabs {
+  border-bottom: none;
+}
+
+.main-tabs .nav-link {
+  background-color: #f8f9fa;
+  color: #005D8F;
+  border: 2px solid #005D8F;
+  border-bottom: 2px solid #005D8F; /* Keep border-bottom for non-selected tabs */
+  margin-right: 5px;
+  border-radius: 10px 10px 0 0;
+  font-weight: 600;
+  padding: 12px 20px;
+}
+
+.main-tabs .nav-link.active {
+  background-color: #212529;
+  color: white;
+  border-top: 2px solid white !important;
+  border-left: 2px solid white !important;
+  border-right: 2px solid white !important;
+  border-bottom:2px solid #212529 !important; /* Remove border-bottom for selected tab */
+}
+
+.main-tabs .nav-link:hover:not(.active) {
+  background-color: #004a73;
+  color: white;
+  border-color: #004a73;
+  border-bottom: 2px solid #004a73; /* Keep border-bottom on hover for non-active tabs */
+}
+
+/* Tab Content Styles */
+.tab-content-wrapper {
+  min-height: 60vh;
+}
+
+/* Shared style for all tab panes */
+.test-case-gen-content,
+.code-generation-content,
+.code-conversion-content {
+  margin: 0rem 4rem 4rem 4rem;
+  padding: 2rem;
+  border: solid 2px #005D8F;
+  border-radius: 0 2rem 2rem 2rem;
+  background-color: rgba(0, 93, 143, 0.05);
+}
+
+/* Remove original margin and border from formbody when inside the new tab pane */
+.test-case-gen-content .formbody {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.code-tab-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.code-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.code-form-row label {
+  font-weight: 600;
+  font-size: larger;
+  color: #005D8F;
+}
+
+.code-form-input,
+.code-form-textarea,
+.code-form-select {
+  padding: 10px;
+  border: 1px solid #005D8F;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.code-form-textarea {
+  height: 200px;
+  resize: vertical;
+}
+
+.code-form-button {
+  padding: 12px 24px;
+  background-color: #005D8F;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.code-form-button:hover {
+  background-color: #004a73;
+}
+
+.code-form-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Dark Theme Updates */
+body{
+  background-color: #323234;
+  color: white;
+}
+.active{
+  background-color: #212529 !important;
+  color: white !important;
+  border-bottom-color: #212529 !important;
+}
+
+h3{
+  color:white;
+}
+
+.input_dark{
+  background-color: #323234;
+  color: white;
+}
+.modal_body{
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 1px solid white;
+  border-radius: 1rem;
+}
+
+.formbody_dark .modal-content,.formbody_dark .btn-close{
+  background-color: #212529;
+  color:white;
+  border: 1px solid white
+}
+
+.resTable,.resTable th,.resTable td {
+  border: 1px solid white;
+  padding: 1rem;
+}
+.textWrap{
+  text-wrap: wrap;
+}
+
+/* Dark theme for new tabs */
+.main-tabs .nav-link {
+  background-color: #323234;
+  color: white;
+  border-color: white;
+  border-bottom: 2px solid white; /* Keep border-bottom for non-selected tabs in dark theme */
+}
+
+.main-tabs .nav-link.active {
+  background-color: #323234 !important;
+  color: white !important;
+  border-top: 2px solid white !important;
+  border-left: 2px solid white !important;
+  border-right: 2px solid white !important;
+  border-bottom: 2px solid #323234 !important;
+}
+
+.main-tabs .nav-link:hover:not(.active) {
+  background-color: #004a73;
+  color: white;
+  border-color: #004a73;
+  border-bottom: 2px solid #004a73; /* Keep border-bottom on hover for non-active tabs in dark theme */
+}
+
+.test-case-gen-content,
+.code-generation-content,
+.code-conversion-content {
+  border-color: white;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.code-form-row label {
+  color: white;
+}
+
+.code-form-input,
+.code-form-textarea,
+.code-form-select {
+  background-color: #323234;
+  color: white;
+  border-color: white;
+}
