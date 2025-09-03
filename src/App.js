@@ -1,4 +1,4 @@
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -18,9 +18,9 @@ function App() {
     show: false,
     body: ""
   });
-  const [response,setResponse] = useState([])
-  const [suggestions,setSuggestions] = useState([])
-  
+  const [response, setResponse] = useState([])
+  const [suggestions, setSuggestions] = useState([])
+
   // States for Code Generation and Code Conversion
   const [codeGenForm, setCodeGenForm] = useState({
     technologyType: '',
@@ -28,7 +28,7 @@ function App() {
     repositoryUrl: '',
     userRequirement: ''
   });
-  
+
   const [codeConvForm, setCodeConvForm] = useState({
     technologyType: '',
     sourceLanguage: '',
@@ -63,7 +63,7 @@ function App() {
         project_name: project_name,
         assigned_to: assigned_to
       }
-      if(testCaseType === 'existing'){
+      if (testCaseType === 'existing') {
         postData.testCaseType = testCaseType;
         postData.existingFile = data.existingFile;
       }
@@ -76,37 +76,91 @@ function App() {
         .then(res => {
           console.log(res)
           setLoader(false);
-          if(res.status === 200){
+          if (res.status === 200) {
             setNotification({
-              show:true,
-              body:res.data.message,
-              type:'success'
+              show: true,
+              body: res.data.message,
+              type: 'success'
             })
             setResponse(res.data.test_cases)
             setSuggestions(res.data.suggestions)
             setResponseShow(true)
-          }else{
+          } else {
             setNotification({
-              show:true,
-              body:"Something went wrong !!",
-              type:'danger'
+              show: true,
+              body: "Something went wrong !!",
+              type: 'danger'
             })
           }
-          
+
         })
-      
+
 
     }
   }
 
   // Handle Code Generation form submission
-  const handleCodeGenSubmit = (e) => {
+  const handleCodeGenSubmit = async (e) => {
     e.preventDefault();
     setLoader(true);
-    
+
     // Simulate API call - Replace this with your actual API call
-    setTimeout(() => {
+    setTimeout(async () => {
       setLoader(false);
+      // ------------------------------------------------------------------------------------------
+
+      const user_req_with_framework = `This is framework ${codeGenForm.framework} and this is the ${codeGenForm.technologyType} which you need to consider for the below user requirement.
+                                        ${codeGenForm.userRequirement}`
+      const postData = {
+        repo_url: codeGenForm.repositoryUrl,
+        requirement_text: user_req_with_framework
+      };
+      console.log("calling code generation API")
+      const response = await  axios.post(`http://127.0.0.1:8000/codegeneration`, postData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'accept': '*/*'
+        }
+      })
+
+      console.log(response)
+      // axios.post(`http://127.0.0.1:8000/codegeneration`, postData, {
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'accept': '*/*'
+      //   }
+      // })
+      //   .then((res) => {
+      //     setLoader(false);
+      //     // if (res.status === 200) {
+      //     if (res === 200) {
+      //       console.log(res)
+      //       setCodeGenResult(res?.new_files?.content || "No result returned.");
+      //       setCodeGenModalShow(true);
+
+      //       setNotification({
+      //         show: true,
+      //         body: "Code generated successfully!",
+      //         type: 'success'
+      //       });
+      //     } else {
+      //       setNotification({
+      //         show: true,
+      //         body: "Something went wrong !!",
+      //         type: 'danger'
+      //       });
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.error(err);
+      //     setLoader(false);
+      //     setNotification({
+      //       show: true,
+      //       body: "API call failed!",
+      //       type: 'danger'
+      //     });
+      //   });
+      // ------------------------------------------------------------------------------------------
       // Mock response - Replace with actual API response
       const mockResult = `// Generated ${codeGenForm.framework} code for ${codeGenForm.technologyType}\n\n` +
         `// Technology: ${codeGenForm.technologyType}\n` +
@@ -114,10 +168,10 @@ function App() {
         `// Repository: ${codeGenForm.repositoryUrl}\n\n` +
         `// User Requirements:\n// ${codeGenForm.userRequirement}\n\n` +
         `// Generated Code:\nfunction generatedCode() {\n  // Your generated code will appear here\n  console.log('Code generated successfully!');\n}\n\nmodule.exports = generatedCode;`;
-      
+
       setCodeGenResult(mockResult);
       setCodeGenModalShow(true);
-      
+
       setNotification({
         show: true,
         body: "Code generated successfully!",
@@ -168,7 +222,7 @@ function App() {
   const handleCodeConvSubmit = (e) => {
     e.preventDefault();
     setLoader(true);
-    
+
     // Simulate API call - Replace this with your actual API call
     setTimeout(() => {
       setLoader(false);
@@ -181,10 +235,10 @@ function App() {
         `// Additional Instructions:\n// ${codeConvForm.additionalInstructions}\n\n` +
         `// Converted Code:\n// Original ${codeConvForm.sourceLanguage} code has been converted to ${codeConvForm.destinationLanguage}\n\n` +
         `function convertedCode() {\n  // Your converted code will appear here\n  console.log('Code converted from ${codeConvForm.sourceLanguage} to ${codeConvForm.destinationLanguage}!');\n}\n\nexport default convertedCode;`;
-      
+
       setCodeConvResult(mockResult);
       setCodeConvModalShow(true);
-      
+
       setNotification({
         show: true,
         body: "Code converted successfully!",
@@ -193,35 +247,35 @@ function App() {
     }, 2000);
   };
 
-  const download = () =>{
+  const download = () => {
     setLoader(true);
     axios.post(`http://10.31.3.17:5000/download-test-cases`, [], {
-            responseType: 'blob'
-          
-        }).then(res => {
-                setLoader(false);
-                if(res.status === 200){
-                  const url = window.URL.createObjectURL(new Blob([res.data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
-                  const link = document.createElement('a');
-                  link.href = url;
-                  link.setAttribute('download', 'test_cases.xlsx'); // Name of the file to be downloaded
-                  document.body.appendChild(link);
-                  link.click();
-                  link.remove();
-                  setNotification({
-                    show:true,
-                    body:"Downloaded Successfully",
-                    type:'success'
-                  })
-                }else{
-                  setNotification({
-                    show:true,
-                    body:"Something went wrong !!",
-                    type:'danger'
-                  })
-                }
-                
-              })
+      responseType: 'blob'
+
+    }).then(res => {
+      setLoader(false);
+      if (res.status === 200) {
+        const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'test_cases.xlsx'); // Name of the file to be downloaded
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setNotification({
+          show: true,
+          body: "Downloaded Successfully",
+          type: 'success'
+        })
+      } else {
+        setNotification({
+          show: true,
+          body: "Something went wrong !!",
+          type: 'danger'
+        })
+      }
+
+    })
   }
   const [responseShow, setResponseShow] = useState(false);
 
@@ -254,7 +308,7 @@ function App() {
             <select
               className="formfield_select input_dark"
               value={codeGenForm.framework}
-              onChange={(e) => setCodeGenForm({...codeGenForm, framework: e.target.value})}
+              onChange={(e) => setCodeGenForm({ ...codeGenForm, framework: e.target.value })}
               required
               disabled={!codeGenForm.technologyType}
             >
@@ -265,7 +319,7 @@ function App() {
             </select>
           </div>
         </div>
-        
+
         {/* Repository URL field */}
         <div>
           <label className="formLabel">Repository Url/Name:</label>
@@ -273,24 +327,24 @@ function App() {
             type="text"
             className="formfield_select input_dark"
             value={codeGenForm.repositoryUrl}
-            onChange={(e) => setCodeGenForm({...codeGenForm, repositoryUrl: e.target.value})}
+            onChange={(e) => setCodeGenForm({ ...codeGenForm, repositoryUrl: e.target.value })}
             placeholder="Enter repository URL or name..."
           />
         </div>
-        
+
         {/* User Requirement field */}
         <div>
           <label className="formLabel">User Requirement:</label>
           <textarea
             className="formfield_ta input_dark"
             value={codeGenForm.userRequirement}
-            onChange={(e) => setCodeGenForm({...codeGenForm, userRequirement: e.target.value})}
+            onChange={(e) => setCodeGenForm({ ...codeGenForm, userRequirement: e.target.value })}
             placeholder="Enter your requirements..."
             required
             rows="8"
           />
         </div>
-        
+
         {/* Generate button */}
         <div>
           <button type="submit" className="btn btn-primary formButton">
@@ -343,7 +397,7 @@ function App() {
             <select
               className="formfield_select input_dark"
               value={codeConvForm.destinationLanguage}
-              onChange={(e) => setCodeConvForm({...codeConvForm, destinationLanguage: e.target.value})}
+              onChange={(e) => setCodeConvForm({ ...codeConvForm, destinationLanguage: e.target.value })}
               required
               disabled={!codeConvForm.sourceLanguage}
             >
@@ -354,7 +408,7 @@ function App() {
             </select>
           </div>
         </div>
-        
+
         {/* Repository URL field */}
         <div>
           <label className="formLabel">Repository Url/Name:</label>
@@ -362,24 +416,24 @@ function App() {
             type="text"
             className="formfield_select input_dark"
             value={codeConvForm.repositoryUrl}
-            onChange={(e) => setCodeConvForm({...codeConvForm, repositoryUrl: e.target.value})}
+            onChange={(e) => setCodeConvForm({ ...codeConvForm, repositoryUrl: e.target.value })}
             placeholder="Enter repository URL or name..."
           />
         </div>
-        
+
         {/* Additional Instructions field - MADE SHORTER */}
         <div>
           <label className="formLabel">Add Your Additional Instructions:</label>
           <textarea
             className="formfield_select input_dark"
             value={codeConvForm.additionalInstructions}
-            onChange={(e) => setCodeConvForm({...codeConvForm, additionalInstructions: e.target.value})}
+            onChange={(e) => setCodeConvForm({ ...codeConvForm, additionalInstructions: e.target.value })}
             placeholder="Enter your additional instructions..."
             rows="3"
-            style={{height: 'auto', minHeight: '80px'}}
+            style={{ height: 'auto', minHeight: '80px' }}
           />
         </div>
-        
+
         {/* Convert button */}
         <div>
           <button type="submit" className="btn btn-primary formButton">
@@ -390,11 +444,11 @@ function App() {
     </div>
   );
 
-  console.log(loader,"loader")
+  console.log(loader, "loader")
   return (
     <>
       <Header />
-      <Toast className="d-inline-block m-1 toast" bg={notification.type} onClose={() => setNotification(prevState =>( { ...prevState,show:false }))} show={notification.show} position="top-end" autohide>
+      <Toast className="d-inline-block m-1 toast" bg={notification.type} onClose={() => setNotification(prevState => ({ ...prevState, show: false }))} show={notification.show} position="top-end" autohide>
         <Toast.Header>
           <strong className="me-auto">Success</strong>
         </Toast.Header>
@@ -405,7 +459,7 @@ function App() {
       <div className="main-tabs">
         <ul className="nav nav-tabs">
           <li className="nav-item">
-            <button 
+            <button
               className={`nav-link ${activeTab === 'test-case-generation' ? 'active' : ''}`}
               onClick={() => setActiveTab('test-case-generation')}
             >
@@ -413,7 +467,7 @@ function App() {
             </button>
           </li>
           <li className="nav-item">
-            <button 
+            <button
               className={`nav-link ${activeTab === 'code-generation' ? 'active' : ''}`}
               onClick={() => setActiveTab('code-generation')}
             >
@@ -421,7 +475,7 @@ function App() {
             </button>
           </li>
           <li className="nav-item">
-            <button 
+            <button
               className={`nav-link ${activeTab === 'code-conversion' ? 'active' : ''}`}
               onClick={() => setActiveTab('code-conversion')}
             >
@@ -442,8 +496,8 @@ function App() {
         {activeTab === 'code-conversion' && <CodeConversionContent />}
       </div>
 
-      {loader && (<div style={{position: "absolute",width: "100vw",height: "100vh",zIndex: 30,top: 0,'backgroundColor': "#00000082"}}>
-        <div className="text-center mt-4" style={{position: 'relative',top:'50%'}}>
+      {loader && (<div style={{ position: "absolute", width: "100vw", height: "100vh", zIndex: 30, top: 0, 'backgroundColor': "#00000082" }}>
+        <div className="text-center mt-4" style={{ position: 'relative', top: '50%' }}>
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
           </Spinner>
@@ -453,47 +507,47 @@ function App() {
       {
         // (uploadedFiles.length)?<Response apiResponse={apiResponse}/> : <FileUpload uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles}/>
       }
-      
+
       {/* <!--Test Case Response Modal --> */}
       <Modal show={responseShow} size='xl' onHide={handleResClose} dialogClassName="formbody_dark modal_body" backdrop="static"
         keyboard={false}>
         <Modal.Header>
           <Modal.Title>
-          <ul className="nav nav-tabs Restab">
-                <li className="nav-item">
-                    <label className={"nav-link" + (resType === 'review'? " active":"")} aria-current="page" onClick={e=>setResType('review')}>Review</label>
-                </li>
-                <li className="nav-item">
-                    <label className={"nav-link" + (resType === 'suggestions'? " active":"")} onClick={e=>setResType('suggestions')}>Suggestions</label>
-                </li>
+            <ul className="nav nav-tabs Restab">
+              <li className="nav-item">
+                <label className={"nav-link" + (resType === 'review' ? " active" : "")} aria-current="page" onClick={e => setResType('review')}>Review</label>
+              </li>
+              <li className="nav-item">
+                <label className={"nav-link" + (resType === 'suggestions' ? " active" : "")} onClick={e => setResType('suggestions')}>Suggestions</label>
+              </li>
             </ul>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            {(resType === 'review') && <table className='resTable'>
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th style={{width: '10%'}}>Test Step</th>
-                        <th>Step Actions</th>
-                        <th>Steps Expected</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {response.map((ele,key)=>{
-                      return(<tr key={key}>
-                        <td>{ele.Title}</td>
-                        <td>{ele['Test Step']}</td>
-                        <td>{ele['Step Action']}</td>
-                        <td>{ele['Step Expected']}</td>
-                      </tr>)
-                    })}
-                </tbody>    
-            </table>}
-            {(resType === 'suggestions') && <div><pre className='textWrap'>{suggestions.map((e, index) => <React.Fragment key={index}>{e.suggestion + "\n"}</React.Fragment>)}</pre></div>}
+          {(resType === 'review') && <table className='resTable'>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th style={{ width: '10%' }}>Test Step</th>
+                <th>Step Actions</th>
+                <th>Steps Expected</th>
+              </tr>
+            </thead>
+            <tbody>
+              {response.map((ele, key) => {
+                return (<tr key={key}>
+                  <td>{ele.Title}</td>
+                  <td>{ele['Test Step']}</td>
+                  <td>{ele['Step Action']}</td>
+                  <td>{ele['Step Expected']}</td>
+                </tr>)
+              })}
+            </tbody>
+          </table>}
+          {(resType === 'suggestions') && <div><pre className='textWrap'>{suggestions.map((e, index) => <React.Fragment key={index}>{e.suggestion + "\n"}</React.Fragment>)}</pre></div>}
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-primary" onClick={e=>download()}>
+          <button className="btn btn-primary" onClick={e => download()}>
             Download
           </button>
           <button className="btn btn-secondary" onClick={handleResClose}>
@@ -508,7 +562,7 @@ function App() {
           <Modal.Title>Code Generation Result</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <pre className='textWrap' style={{backgroundColor: '#1e1e1e', color: '#d4d4d4', padding: '20px', borderRadius: '5px', fontSize: '14px', fontFamily: 'Consolas, Monaco, monospace'}}>{codeGenResult}</pre>
+          <pre className='textWrap' style={{ backgroundColor: '#1e1e1e', color: '#d4d4d4', padding: '20px', borderRadius: '5px', fontSize: '14px', fontFamily: 'Consolas, Monaco, monospace' }}>{codeGenResult}</pre>
         </Modal.Body>
         <Modal.Footer>
           <button className="btn btn-secondary" onClick={handleCodeGenClose}>
@@ -523,7 +577,7 @@ function App() {
           <Modal.Title>Code Conversion Result</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <pre className='textWrap' style={{backgroundColor: '#1e1e1e', color: '#d4d4d4', padding: '20px', borderRadius: '5px', fontSize: '14px', fontFamily: 'Consolas, Monaco, monospace'}}>{codeConvResult}</pre>
+          <pre className='textWrap' style={{ backgroundColor: '#1e1e1e', color: '#d4d4d4', padding: '20px', borderRadius: '5px', fontSize: '14px', fontFamily: 'Consolas, Monaco, monospace' }}>{codeConvResult}</pre>
         </Modal.Body>
         <Modal.Footer>
           <button className="btn btn-secondary" onClick={handleCodeConvClose}>
